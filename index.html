@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DICE FORGE — Premium Dice Roller</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ───────────────────────────── BACKGROUND ───────────────────────────── -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <!-- ───────────────────────────── HEADER ────────────────────────────────── -->
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">DICE<span class="logo-accent">FORGE</span></span>
+    </div>
+    <div class="header-shortcuts">
+      <kbd>SPACE</kbd><span>Roll</span>
+      <kbd>R</kbd><span>Again</span>
+      <kbd>C</kbd><span>Clear</span>
+    </div>
+  </header>
+
+  <!-- ───────────────────────────── MAIN LAYOUT ───────────────────────────── -->
+  <main class="app-main">
+
+    <!-- LEFT COLUMN: Controls + Stats -->
+    <aside class="panel panel-left">
+
+      <!-- Dice Type Selector -->
+      <section class="glass-card" id="dice-selector">
+        <h2 class="card-title">Select Die</h2>
+        <div class="dice-grid">
+          <button class="dice-btn" data-sides="4"  aria-label="D4">
+            <span class="dice-shape d4">◆</span>
+            <span class="dice-label">D4</span>
+          </button>
+          <button class="dice-btn active" data-sides="6" aria-label="D6">
+            <span class="dice-shape d6">■</span>
+            <span class="dice-label">D6</span>
+          </button>
+          <button class="dice-btn" data-sides="8"  aria-label="D8">
+            <span class="dice-shape d8">◈</span>
+            <span class="dice-label">D8</span>
+          </button>
+          <button class="dice-btn" data-sides="10" aria-label="D10">
+            <span class="dice-shape d10">◇</span>
+            <span class="dice-label">D10</span>
+          </button>
+          <button class="dice-btn" data-sides="12" aria-label="D12">
+            <span class="dice-shape d12">⬡</span>
+            <span class="dice-label">D12</span>
+          </button>
+          <button class="dice-btn" data-sides="20" aria-label="D20">
+            <span class="dice-shape d20">▲</span>
+            <span class="dice-label">D20</span>
+          </button>
+          <button class="dice-btn" data-sides="100" aria-label="D100">
+            <span class="dice-shape d100">◎</span>
+            <span class="dice-label">D100</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Quantity Selector -->
+      <section class="glass-card" id="quantity-card">
+        <h2 class="card-title">Number of Dice</h2>
+        <div class="qty-control">
+          <button class="qty-btn" id="qty-dec" aria-label="Decrease">−</button>
+          <div class="qty-display">
+            <span id="qty-value">1</span>
+            <span class="qty-sub">dice</span>
+          </div>
+          <button class="qty-btn" id="qty-inc" aria-label="Increase">+</button>
+        </div>
+        <input type="range" id="qty-slider" min="1" max="20" value="1" aria-label="Dice quantity slider" />
+      </section>
+
+      <!-- Presets -->
+      <section class="glass-card" id="presets-card">
+        <h2 class="card-title">Game Presets</h2>
+        <div class="preset-list">
+          <button class="preset-btn" data-preset="dnd-attack"   title="D&amp;D Attack Roll">⚔ Attack</button>
+          <button class="preset-btn" data-preset="dnd-damage"   title="D&amp;D Damage Roll">💥 Damage</button>
+          <button class="preset-btn" data-preset="dice-poker"   title="5 D6 Poker Dice">♠ Poker</button>
+          <button class="preset-btn" data-preset="advantage"    title="Roll 2d20 Advantage">🎯 Adv.</button>
+          <button class="preset-btn" data-preset="initiative"   title="Initiative Roll">⚡ Init.</button>
+          <button class="preset-btn" data-preset="fate-dice"    title="4 Fate Dice (D6)">✦ Fate</button>
+        </div>
+      </section>
+
+      <!-- Statistics -->
+      <section class="glass-card" id="stats-card">
+        <h2 class="card-title">Statistics</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-value" id="stat-total-rolls">0</span>
+            <span class="stat-label">Total Rolls</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="stat-average">—</span>
+            <span class="stat-label">Average</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="stat-highest">—</span>
+            <span class="stat-label">Highest</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="stat-lowest">—</span>
+            <span class="stat-label">Lowest</span>
+          </div>
+          <div class="stat-item stat-wide">
+            <span class="stat-value" id="stat-common">—</span>
+            <span class="stat-label">Most Common</span>
+          </div>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- CENTER COLUMN: Dice Stage + Roll Button -->
+    <section class="panel panel-center">
+
+      <!-- Current Config Label -->
+      <div class="roll-config-label">
+        <span id="config-display">1 × D6</span>
+      </div>
+
+      <!-- Dice Stage -->
+      <div class="dice-stage" id="dice-stage" aria-live="polite" aria-label="Dice results">
+        <div class="stage-placeholder" id="stage-placeholder">
+          <span class="placeholder-icon">⬡</span>
+          <p>Press <kbd>SPACE</kbd> or click Roll to begin</p>
+        </div>
+        <div class="dice-results" id="dice-results"></div>
+      </div>
+
+      <!-- Result Summary -->
+      <div class="result-summary" id="result-summary">
+        <div class="summary-inner" id="summary-inner">
+          <span class="summary-label">TOTAL</span>
+          <span class="summary-total" id="summary-total">—</span>
+          <span class="summary-detail" id="summary-detail"></span>
+        </div>
+      </div>
+
+      <!-- Roll Controls -->
+      <div class="roll-controls">
+        <button class="btn-roll" id="btn-roll" aria-label="Roll dice (Space)">
+          <span class="btn-roll-inner">
+            <span class="btn-icon">⬡</span>
+            <span class="btn-text">ROLL DICE</span>
+          </span>
+          <span class="btn-shimmer"></span>
+        </button>
+        <div class="secondary-controls">
+          <button class="btn-secondary" id="btn-roll-again" aria-label="Roll again (R)" disabled>
+            ↺ Roll Again
+          </button>
+          <button class="btn-secondary" id="btn-export" aria-label="Export roll history">
+            ↓ Export JSON
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: History -->
+    <aside class="panel panel-right">
+      <section class="glass-card history-card">
+        <div class="history-header">
+          <h2 class="card-title">Roll History</h2>
+          <button class="btn-clear" id="btn-clear" aria-label="Clear history (C)">Clear</button>
+        </div>
+        <div class="history-list" id="history-list">
+          <div class="history-empty" id="history-empty">
+            <span>No rolls yet</span>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+  </main>
+
+  <!-- ───────────────────────────── TOAST ─────────────────────────────────── -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
